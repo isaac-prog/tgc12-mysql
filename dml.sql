@@ -101,3 +101,33 @@ select orderNumber, YEAR(orderDate), MONTH(orderDate), DAY(orderDate) from order
 select * from orders where YEAR(orderDate) = 2004 AND MONTH(orderDate) = 1;
 /* OR: (but take note of the numebr of days in the month) */
 select * from orders where orderDate BETWEEN '2004-01-01' AND '2004-01-31'
+
+/* JOIN QUESTIONS SOLUTION */
+
+/* Q3 */
+select orders.*, customerName, contactLastName, contactFirstName
+	from customers 
+	join orders
+		on customers.customerNumber = orders.customerNumber
+    where customers.customerNumber = 124;
+
+/* Q6 */
+SELECT products.productName, orderNumber, priceEach, products.productCode, orderLineNumber
+    from orderdetails join products
+    on orderdetails.productCode = products.productCode
+
+/* Q7 */
+SELECT customerName, state, city, payments.* from payments inner join customers
+on payments.customerNumber = customers.customerNumber
+where country = "USA";
+
+/** AGGREGATION **/
+
+/* count how many customers there are */
+SELECT count(*) from customers 
+
+/* select the countries which customers are from, without duplicates */
+SELECT distinct country FROM customers;
+
+/* sum up the quantity ordered column in the orderdetails table */
+SELECT sum(quantityOrdered) FROM orderdetails;
