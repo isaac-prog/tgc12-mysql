@@ -131,3 +131,54 @@ SELECT distinct country FROM customers;
 
 /* sum up the quantity ordered column in the orderdetails table */
 SELECT sum(quantityOrdered) FROM orderdetails;
+
+/* find the average quantity ordered across all the order details */
+SELECT avg(quantityOrdered) FROM orderdetails;
+
+/* display for each order how many days between ordering and shipping */
+SELECT orderNumber, DATEDIFF(shippedDate, orderDate) as "lag" from orders;
+
+/** GROUP BY **/
+/* 1. whatever we group by, we must select */
+/* 2. we can only use aggregation functions in SELECT after selecting whatever we group by */
+SELECT officeCode, count(*) FROM employees
+GROUP BY(officeCode)
+
+/* Count how  many sales rep there are in each office */
+SELECT officeCode, count(*) from employees
+WHERE jobTitle = "Sales Rep"
+GROUP BY(officeCode)
+
+/* Show how many sales rep there in each office, and display the city each office is in */
+/* WHATEVER you select, you must group by (except for aggregation columns) */
+SELECT offices.officeCode, city, count(*) from employees
+JOIN offices ON employees.officeCode = offices.officeCode
+WHERE jobTitle = "Sales Rep"
+GROUP BY offices.officeCode, city
+
+/* Display how many orders were made, by the years */
+select YEAR(orderDate), count(*) from orders
+group by YEAR(orderDate)
+
+/* Display the total amount payment per year */
+SELECT YEAR(paymentDate), sum(amount) FROM payments
+group by YEAR(paymentDate)
+
+/* Display the total amount payment per year and month */
+SELECT YEAR(paymentDate),  MONTH(paymentDate), sum(amount) FROM payments
+group by YEAR(paymentDate), MONTH(paymentDate)
+
+/* Display only the month and year where the total amount earned is greater than 300000 */
+SELECT YEAR(paymentDate),  MONTH(paymentDate), sum(amount) FROM payments
+group by YEAR(paymentDate), MONTH(paymentDate)
+having sum(amount) >= 300000
+
+/* order of clauses : https://sqlbolt.com/lesson/select_queries_order_of_execution */
+
+/* Show all offices that have more than 2 sales rep */
+SELECT employees.officeCode, city, state, count(*) AS "Sales Rep Count" from employees
+JOIN offices ON employees.officeCode = offices.officeCode
+WHERE jobTitle = "Sales Rep"
+group by employees.officeCode, city, state
+HAVING count(*) > 2
+ORDER BY city DESC
