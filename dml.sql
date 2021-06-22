@@ -182,3 +182,63 @@ WHERE jobTitle = "Sales Rep"
 group by employees.officeCode, city, state
 HAVING count(*) > 2
 ORDER BY city DESC
+
+/* SOLUTIONS */
+/* Q8 */
+select offices.officeCode, city, state, count(*) from offices
+ join employees on employees.officeCode = offices.officeCode
+ where offices.country = "USA"
+ group by offices.officeCode, city, state
+
+ /* Q9 */
+ select  customers.customerNumber, customers.customerName, avg(amount) 
+from payments join customers on customers.customerNumber = payments.customerNumber
+group by customers.customerNumber, customers.customerName
+
+/* Q10 */
+select  customers.customerNumber, customers.customerName, avg(amount) from payments join customers
+on customers.customerNumber = payments.customerNumber
+group by customers.customerNumber, customers.customerName
+having avg(amount) >= 10000
+
+/* Q11 */
+select orderdetails.productCode, productName, sum(quantityOrdered) as 'Total Quantity'
+from orderdetails join products on orderdetails.productCode = products.productCode
+group by orderdetails.productCode, productName
+order by 'Total Quantity' desc
+limit 10
+
+/* Q12 */
+select * from orders where orderDate between '2003-01-01' and '2003-12-31' 
+
+/* Q13 */
+select month(orderDate) as 'Month', count(*) as 'Number of Orders made' from orders
+where orderDate between '2003-01-1' and '2003-12-31'
+group by month(orderDate)
+
+/* As Q13, but over the span of two years (2003 to 2004) */
+select year(orderDate) as 'Year', month(orderDate) as 'Month', count(*) as 'Number of Orders made' from orders
+where orderDate between '2003-01-1' and '2004-12-31'
+group by year(orderDate), month(orderDate)
+
+/** SUBQUERIES **/
+
+/* Find the average employee per office */
+  select (select count(*) from employees) /  (select count(*) from offices) 
+
+/* Find all the offices which employee count is higher than average */
+select officeCode, count(*) from employees
+group by officeCode
+having count(*) >  (select count(*) from employees) /  (select count(*) from offices)
+
+/* Find all the customers who do not have a sales rep */
+/* the set of all customers without sales rep is the set of all customers
+ - the set of customers with sales rep */
+
+select * from customers where customerNumber NOT IN
+	(select customerNumber from customers where salesRepEmployeeNumber IS NOT NULL)
+
+
+/* Find all the products that have not been ordered before */
+select * from products where 
+ productCode not in (SELECT distinct productCode FROM orderdetails)
