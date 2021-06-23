@@ -1,0 +1,25 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<h1>Movies</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>City ID</th>
+            <th>City</th>
+            <th>Country ID</th>
+        </tr>
+    </thead>
+    
+    {{#each cities}}
+    <tr>
+        <td>{{this.city_id}}</td>
+        <td>{{this.city}}</td>
+        <td>{{this.country}}</td>
+    </tr>
+    {{/each}}
+</table>
+
+{{/block}}
+
+{{/extends}}

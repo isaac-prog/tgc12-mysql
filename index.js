@@ -38,7 +38,22 @@ async function main() {
 
     // show all the cities in a table instead
     app.get('/city', async(req,res)=>{
+        let query = `select * from city
+                       join country
+                       on city.country_id = country.country_id`;
+        let [cities] = await connection.execute(query);
+        res.render('cities',{
+            'cities': cities
+        })
+    })
 
+    // search for actor
+    app.get('/search', async(req,res)=>{
+        let query = "select * from actor";
+        let [actors] = await connection.execute(query);
+        res.render('actors',{
+            'actors': actors
+        })
     })
 
 }
