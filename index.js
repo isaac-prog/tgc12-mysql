@@ -17,10 +17,17 @@ wax.on(hbs.handlebars);
 wax.setLayoutPath('./views/layouts');
 
 // set up forms handling
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({
+    extended: false
+}));
 
 // routes
-
+app.get('/', (req,res)=>{
+    res.send("It's alive!!!")
+})
 
 
 // start server
+app.listen(3000, ()=>{
+    console.log("Server has started")
+})
