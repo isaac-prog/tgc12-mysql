@@ -10,7 +10,7 @@ let app = express();
 app.set('view engine', 'hbs');
 
 // all css, image files and js files are in public folder
-app.use(app.static('public'));
+app.use(express.static('public'));
 
 // set up template inheritance
 wax.on(hbs.handlebars);
@@ -21,11 +21,20 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-// routes
-app.get('/', (req,res)=>{
-    res.send("It's alive!!!")
-})
+async function main() {
 
+    const connection = await mysql.createConnection({
+        host:'localhost',
+        user:'root',
+        'database': 'sakila'
+    })
+
+    app.get('/', (req,res)=>{
+        res.send("Hello world");
+    })
+
+}
+main();
 
 // start server
 app.listen(3000, ()=>{

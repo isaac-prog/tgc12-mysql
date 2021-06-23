@@ -1,6 +1,9 @@
 {
   "dependencies": {
-    "mysql2": "^2.2.5"
+    "express": "^4.17.1",
+    "hbs": "^4.1.2",
+    "mysql2": "^2.2.5",
+    "wax-on": "^1.2.2"
   },
   "name": "tgc12-mysql",
   "description": "![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)",
