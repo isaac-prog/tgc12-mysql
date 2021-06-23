@@ -49,11 +49,41 @@ async function main() {
 
     // search for actor
     app.get('/search', async(req,res)=>{
-        let query = "select * from actor";
+        
+        // the MASTER query (the always true query in other words)
+        let query = "select * from actor where 1";
+
+        if (req.query.search_terms) {
+            // if the program reaches here, it means
+            // that req.query.search_terms is not null, not empty, not undefined, not a zero, not a NaN and
+            // not empty string
+
+            // append to the query
+            query += ` and (first_name like '%${req.query.search_terms}%'
+                       or last_name like '%${req.query.search_terms}%')`
+        }
+
+        console.log("Final query =", query);
+
         let [actors] = await connection.execute(query);
-        res.render('actors',{
-            'actors': actors
+        res.render('search',{
+            'actors': actors,
+            'search_terms': req.query.search_terms
         })
+    })
+
+    /* create a search for customer */
+    app.get('/customer', async(req,res)=>{
+
+        // 1. write the code to display the customers
+        // in a table
+
+        // 2. put in the form
+        // one field to search by the first name and last name
+        // one field to search by the email address
+
+        // 3. modify the query based on whether req.query has
+        // any value for the texte input
     })
 
 }

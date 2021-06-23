@@ -6,7 +6,8 @@
 retriving information, we are adding any new data
 , hence we should use GET -->
 <form method="GET">
-    <input type="text" placeholder="Search terms" class="form-control" name="search_terms"/>
+    <input type="text" value="{{search_terms}}" placeholder="Search terms" class="form-control" name="search_terms"/>
+    <input type="submit" value="Search"  class="btn btn-primary my-3"/>
 </form>
 
 <table class="table">
