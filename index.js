@@ -75,15 +75,33 @@ async function main() {
     /* create a search for customer */
     app.get('/customer', async(req,res)=>{
 
-        // 1. write the code to display the customers
-        // in a table
+        let query = "select * from customer where 1";
+      
+        if (req.query.name_search) {
+            let name = req.query.name_search;
+            query += ` and ( 
+                first_name like '%${name}%' or  last_name like '%${name}%'
+            )
+            `
+        }
 
-        // 2. put in the form
-        // one field to search by the first name and last name
-        // one field to search by the email address
+        if (req.query.email_search) {
+            let email = req.query.email_search;
+            query += ` and email like '%${email}%'`
+        }
+      
+        console.log(query);
+      
+        let [customers] = await connection.execute(query);
+        res.render('customers', {
+            'customers': customers,
+            'name_search': req.query.name_search,
+            'email_search': req.query.email_search
+        })
+
 
         // 3. modify the query based on whether req.query has
-        // any value for the texte input
+        // any value for the text input
     })
 
 }

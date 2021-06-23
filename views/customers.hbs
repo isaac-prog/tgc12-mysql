@@ -1,0 +1,53 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<h1>Movies</h1>
+<form method="GET">
+    <div>
+        <label class="form-label">Name</label>
+        <input type="text" name="name_search" value="{{name_search}}" class="form-control"/>
+    </div>
+    <div>
+        <label class="form-label">Email</label>
+        <input type="text" name="email_search" value="{{email_search}}" class="form-control"/>
+    </div>
+    <input type="submit" class="btn btn-primary my-3"/>
+
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    
+    {{#if customers}}
+        {{#each customers}}
+        <tr>
+            <td>{{this.customer_id}}</td>
+            <td>{{this.first_name}}</td>
+            <td>{{this.last_name}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.active}}</td>
+        </tr>
+        {{/each}}
+    {{else}}
+        <tr>
+            <td colspan="5">
+                <div class="alert alert-danger">
+                    There is no customers matching your critera
+                </div>
+            </td>
+        </tr>
+
+    {{/if }}
+</table>
+
+{{/block}}
+
+{{/extends}}
