@@ -36,6 +36,11 @@ async function main() {
         })
     })
 
+    // show all the cities in a table instead
+    app.get('/city', async(req,res)=>{
+
+    })
+
 }
 main();
 
