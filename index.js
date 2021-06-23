@@ -29,8 +29,11 @@ async function main() {
         'database': 'sakila'
     })
 
-    app.get('/', (req,res)=>{
-        res.send("Hello world");
+    app.get('/', async (req,res)=>{
+        let [actors] = await connection.execute("select * from actor");
+        res.render('actors', {
+            'actors': actors
+        })
     })
 
 }
