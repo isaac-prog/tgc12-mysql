@@ -76,32 +76,33 @@ async function main() {
     app.get('/customer', async(req,res)=>{
 
         let query = "select * from customer where 1";
+        let bindings = [];
       
         if (req.query.name_search) {
             let name = req.query.name_search;
             query += ` and ( 
-                first_name like '%${name}%' or  last_name like '%${name}%'
+                first_name like ? or  last_name like ?
             )
             `
+            bindings.push('%' + name + '%', '%'+ name + '%');
         }
 
         if (req.query.email_search) {
             let email = req.query.email_search;
-            query += ` and email like '%${email}%'`
+            query += ` and email like ?`
+            bindings.push('%' + email + '%')
         }
-      
+
         console.log(query);
+        console.log(bindings);
+    
       
-        let [customers] = await connection.execute(query);
+        let [customers] = await connection.execute(query, bindings);
         res.render('customers', {
             'customers': customers,
             'name_search': req.query.name_search,
             'email_search': req.query.email_search
         })
-
-
-        // 3. modify the query based on whether req.query has
-        // any value for the text input
     })
 
 }
