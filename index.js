@@ -92,10 +92,6 @@ async function main() {
             query += ` and email like ?`
             bindings.push('%' + email + '%')
         }
-
-        console.log(query);
-        console.log(bindings);
-    
       
         let [customers] = await connection.execute(query, bindings);
         res.render('customers', {
@@ -117,6 +113,20 @@ async function main() {
 
         await connection.execute(query, bindings);
         res.redirect('/')
+    })
+
+    app.get('/country/create', async(req,res)=>{
+        res.render('create_country');
+    })
+
+    app.post('/country/create', async (req,res)=>{
+        let country = req.body.country;
+        let query = "insert into country (country) values (?);"
+        let bindings = [ country];
+
+        await connection.execute(query, bindings);
+        res.send("New country has been added")
+
     })
 
 }
