@@ -1,0 +1,40 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<h1>Create a new Film</h1>
+<form method="POST">
+    <div>
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" name="title"/>
+    </div>
+    <div>
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description"></textarea>
+    </div>
+
+    <div>
+        <label class="form-label">Language</label>
+        <select class="form-control" name="language">
+            {{#each languages}}
+            <option value="{{this.language_id}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <label class="form-label">Rental Duration</label>
+        <input type="text" class="form-control" name="rentalDuration"/>
+    </div>
+    <div>
+        <label class="form-label">Rental Rate</label>
+        <input type="text" class="form-control" name="rentalRate"/>
+    </div>
+    <div>
+        <label class="form-label">Replacement Cost</label>
+        <input type="text" class="form-control" name="replacementCost"/>
+    </div>
+    <input type="submit" class="btn btn-primary my-3"/>
+</form>
+
+{{/block}}
+
+{{/extends}}

@@ -202,6 +202,31 @@ async function main() {
 
     })
 
+    app.get('/film/create', async (req,res)=>{
+        let [languages] = await connection.execute("select * from language");
+
+        res.render('create_film',{
+            'languages': languages
+        })
+    })
+
+    app.post('/film/create', async(req,res)=>{
+        let {
+            title, description, language, rentalRate, rentalDuration, replacementCost
+        } = req.body;
+
+        let query = `
+             insert into film 
+                 (title, description, language_id, rental_rate, rental_duration, replacement_cost)
+                 values (?, ?, ?, ?, ?, ?)
+            `
+        
+        let bindings = [title, description, language, rentalRate, rentalDuration, replacementCost ];
+        await connection.execute(query, bindings);
+        res.send("New film has been added");
+      
+    })
+
 }
 main();
 
