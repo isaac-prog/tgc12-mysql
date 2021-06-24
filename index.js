@@ -196,9 +196,10 @@ async function main() {
 
     app.get('/film/create', async (req,res)=>{
         let [languages] = await connection.execute("select * from language");
-
+        let [actors] = await connection.execute("select * from actor");
         res.render('create_film',{
-            'languages': languages
+            'languages': languages,
+            'actors': actors
         })
     })
 
@@ -212,9 +213,41 @@ async function main() {
                  (title, description, language_id, rental_rate, rental_duration, replacement_cost)
                  values (?, ?, ?, ?, ?, ?)
             `
-        
+        // when you are creating with a row with many to many relationship
+        // create the row FIRST
+        // then add in the relationship
         let bindings = [title, description, language, rentalRate, rentalDuration, replacementCost ];
-        await connection.execute(query, bindings);
+        let [results] = await connection.execute(query, bindings);
+
+        // create the relationship
+        // req.body.actors can be one of the three possible values:
+        // - if the user didn't actors => undefined
+        // - if the user select only one actor => the id of the actor
+        // - if the user select more than one actor => an array of ids of selected actors
+        // let actors = req.body.actors || [];
+        // actors = Array.isArray(actors) ? actors : [actors];
+
+        // actors now will be an ARRAY
+        if (req.body.actors) {
+            console.log(req.body.actors);
+            let actors = [];
+            if (Array.isArray(req.body.actors)) {
+                actors = req.body.actors; 
+            } else {
+                actors.push(req.body.actors);
+            }
+
+            // the actors array will one or more elements
+            for (let a of actors) {
+                let bindings =   [ results.insertId, a];
+                console.log(bindings);
+                connection.execute(
+                    "insert into film_actor (film_id, actor_id) values (?, ?)", bindings
+                  );
+            }
+        }
+
+
         res.send("New film has been added");
     })
 
