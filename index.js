@@ -219,15 +219,16 @@ async function main() {
         let bindings = [title, description, language, rentalRate, rentalDuration, replacementCost ];
         let [results] = await connection.execute(query, bindings);
 
-        // create the relationship
+        // create the many to many relationship with actors
         // req.body.actors can be one of the three possible values:
         // - if the user didn't actors => undefined
         // - if the user select only one actor => the id of the actor
         // - if the user select more than one actor => an array of ids of selected actors
         // let actors = req.body.actors || [];
         // actors = Array.isArray(actors) ? actors : [actors];
-
         // actors now will be an ARRAY
+
+        // alternative:
         if (req.body.actors) {
             console.log(req.body.actors);
             let actors = [];
@@ -261,9 +262,29 @@ async function main() {
 
         let [languages] = await connection.execute("select * from language");
 
+        let [actors] = await connection.execute("select * from actor");
+
+        // retrieve all the actors that acting in this film
+        let [currentActors] = await connection.execute(
+            "select actor_id from film_actor where film_id = ?",
+            [ req.params.film_id]
+        )
+
+        // console.log(currentActors);
+        // let currentActorIDs = currentActors.map( a => a.actor_id);
+        // console.log(currentActorIDs);
+
+        // alternatively:
+        let currentActorIDs = [];
+        for (let actor of currentActors) {
+            currentActorIDs.push(actor.actor_id)
+        }
+
         res.render('update_film',{
             'film': targetFilm,
-            'languages': languages
+            'languages': languages,
+            'actors': actors,
+            'currentActorIDs': currentActorIDs
         })
     })
 
@@ -286,6 +307,24 @@ async function main() {
         ]
 
         await connection.execute(query, bindings);
+
+        // update relationships with actors
+        // 1. REMOVE all the actors from the film
+        // 2. WE re-add the selected actors
+        let actors = req.body.actors || [];
+        actors = Array.isArray(actors) ? actors : [actors];
+        
+        // delete all existing actors from the film
+        await connection.execute("delete from film_actor where film_id = ?", [ req.params.film_id]);
+
+        for (let a of actors) {
+            let bindings =   [ req.params.film_id, a];
+     
+            connection.execute(
+                "insert into film_actor (film_id, actor_id) values (?, ?)", bindings
+              );
+        }
+
         res.send("Film has been updated")
     })
 
