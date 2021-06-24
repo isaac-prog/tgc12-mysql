@@ -227,6 +227,21 @@ async function main() {
       
     })
 
+    app.get('/city/create', async (req,res)=> {
+        let [countries] = await connection.execute("select * from country order by country");
+        res.render('create_city',{
+            'countries': countries
+        })
+    })
+
+    app.post('/city/create', async (req,res)=>{
+        let { city, country} = req.body;
+        let query = "insert into city (city, country_id) values (?,?)";
+        let bindings = [city, country];
+        await connection.execute(query, bindings);
+        res.send("New city has been created")
+    })
+
 }
 main();
 
