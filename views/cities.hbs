@@ -8,6 +8,7 @@
             <th>City ID</th>
             <th>City</th>
             <th>Country ID</th>
+            <th></th>
         </tr>
     </thead>
     
@@ -16,6 +17,9 @@
         <td>{{this.city_id}}</td>
         <td>{{this.city}}</td>
         <td>{{this.country}}</td>
+        <td>
+            <a href="/city/{{this.city_id}}/update" class="btn btn-primary btn-sm">Edit</a>
+        </td>
     </tr>
     {{/each}}
 </table>

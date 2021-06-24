@@ -39,17 +39,6 @@ async function main() {
         })
     })
 
-    // show all the cities in a table instead
-    app.get('/city', async(req,res)=>{
-        let query = `select * from city
-                       join country
-                       on city.country_id = country.country_id`;
-        let [cities] = await connection.execute(query);
-        res.render('cities',{
-            'cities': cities
-        })
-    })
-
     // search for actor
     app.get('/search', async(req,res)=>{
         
@@ -267,6 +256,18 @@ async function main() {
         res.send("Film has been updated")
     })
 
+    // show all the cities in a table instead
+    app.get('/city', async(req,res)=>{
+        let query = `select * from city
+                       join country
+                       on city.country_id = country.country_id
+                       order by city.city`;
+        let [cities] = await connection.execute(query);
+        res.render('cities',{
+            'cities': cities
+        })
+    })
+
     app.get('/city/create', async (req,res)=> {
         let [countries] = await connection.execute("select * from country order by country");
         res.render('create_city',{
@@ -280,6 +281,40 @@ async function main() {
         let bindings = [city, country];
         await connection.execute(query, bindings);
         res.send("New city has been created")
+    })
+
+    app.get('/city/:city_id/update', async(req,res)=>{
+        let [city] = await connection.execute("select * from city where city_id = ?", 
+                                [req.params.city_id]
+                            );
+        let targetCity = city[0];
+
+        let [countries] = await connection.execute('select * from country order by country');
+
+        res.render('update_city', {
+            'city': targetCity,
+            'countries': countries
+        })  
+    })
+
+    app.post('/city/:city_id/update', async (req,res)=>{
+        let { city, country} = req.body;
+
+         // validation: check that the country provided by the form actually exists    
+        let checkCountryQuery = "select * from country where country_id = ?";
+        let [checkCountry] = await connection.execute(checkCountryQuery, [req.body.country]);
+       
+        if (checkCountry.length > 0) {
+            let query =`update city set city = ?, country_id =?
+            where city_id = ?`;
+            let bindings = [city, country, req.params.city_id];
+            await connection.execute(query, bindings);
+            res.redirect('/city');
+        } else {
+            res.send("Invalid city");
+        }
+
+       
     })
 
     
