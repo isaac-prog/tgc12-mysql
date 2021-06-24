@@ -9,6 +9,7 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Last Update</th>
+            <th></th>
         </tr>
     </thead>
     
@@ -18,6 +19,10 @@
         <td>{{this.first_name}}</td>
         <td>{{this.last_name}}</td>
         <td>{{this.last_update}}</td>
+        <td>
+            <a href="/actor/{{this.actor_id}}/update" class="btn btn-primary btn-sm">Edit</a>
+        </td>
+
     </tr>
     {{/each}}
 </table>

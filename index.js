@@ -115,6 +115,35 @@ async function main() {
         res.redirect('/')
     })
 
+    app.get('/actor/:actor_id/update', async(req,res)=>{
+        //fetch the actor
+        let query = "select * from actor where actor_id = ?";
+
+        // actors will always be an array regardless of the number of results
+        let [actors] =  await connection.execute(query, [ req.params.actor_id ]);
+        
+        // extract out the first element from the results
+        let targetActor = actors[0];
+
+        res.render('update_actor', {
+            'actor': targetActor
+        })
+    })
+
+    app.post('/actor/:actor_id/update', async(req,res)=>{
+        // let first_name = req.body.first_name;
+        // let last_name = req.body.last_name;
+        // can use destructuring instead
+        let { firstName, lastName} = req.body;
+        let query = `update actor set first_name = ?, last_name = ? where
+                            actor_id = ?;`
+        let bindings = [firstName, lastName, req.params.actor_id];
+        console.log(bindings);
+        await connection.execute(query, bindings);
+        res.redirect('/')
+
+    })
+
     app.get('/country/create', async(req,res)=>{
         res.render('create_country');
     })
