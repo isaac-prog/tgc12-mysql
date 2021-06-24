@@ -105,6 +105,20 @@ async function main() {
         })
     })
 
+    app.get('/actor/create', async (req,res)=>{
+        res.render('create_actor');
+    })
+
+    app.post('/actor/create', async(req,res)=>{
+        let firstName = req.body.firstName;
+        let lastName = req.body.lastName;
+        let query = "insert into actor (first_name, last_name) values (?, ?);"
+        let bindings = [firstName, lastName]
+
+        await connection.execute(query, bindings);
+        res.redirect('/')
+    })
+
 }
 main();
 
