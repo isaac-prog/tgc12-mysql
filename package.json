@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "express": "^4.17.1",
+    "handlebars-helpers": "^0.10.0",
     "hbs": "^4.1.2",
     "mysql2": "^2.2.5",
     "wax-on": "^1.2.2"

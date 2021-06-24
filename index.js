@@ -2,6 +2,9 @@ const express = require('express');
 const hbs = require('hbs');
 const wax = require('wax-on');
 const mysql = require('mysql2/promise');
+const helpers = require('handlebars-helpers')({
+    handlebars: hbs.handlebars
+});
 
 // create express app
 let app = express();
@@ -224,7 +227,44 @@ async function main() {
         let bindings = [title, description, language, rentalRate, rentalDuration, replacementCost ];
         await connection.execute(query, bindings);
         res.send("New film has been added");
-      
+    })
+
+    app.get('/film/:film_id/update', async (req,res)=>{
+        // retrieve the film that the user is updating
+        let [films] = await connection.execute(
+            'select * from film where film_id = ?',
+            [req.params.film_id]
+        );
+        let targetFilm = films[0];
+
+        let [languages] = await connection.execute("select * from language");
+
+        res.render('update_film',{
+            'film': targetFilm,
+            'languages': languages
+        })
+    })
+
+    app.post('/film/:film_id/update', async (req,res)=>{
+
+        let { title, description, language, rentalRate,
+                rentalDuration, replacementCost} = req.body;
+
+        let query = `update film set title=?, 
+                    description = ?,
+                    language_id = ?,
+                    rental_rate = ?,
+                    rental_duration = ?,
+                    replacement_cost = ?
+                    where film_id = ?`
+
+        let bindings = [
+            title, description, language, rentalRate, 
+                rentalDuration, replacementCost, req.params.film_id
+        ]
+
+        await connection.execute(query, bindings);
+        res.send("Film has been updated")
     })
 
     app.get('/city/create', async (req,res)=> {
@@ -241,6 +281,8 @@ async function main() {
         await connection.execute(query, bindings);
         res.send("New city has been created")
     })
+
+    
 
 }
 main();
