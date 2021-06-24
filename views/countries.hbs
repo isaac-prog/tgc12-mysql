@@ -1,0 +1,29 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<h1>Countries</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Country ID</th>
+            <th>Country</th>
+            <th></th>
+        </tr>
+    </thead>
+    
+    {{#each countries}}
+    <tr>
+        <td>{{this.country_id}}</td>
+        <td>{{this.country}}</td>
+        <td>
+            <a class="btn btn-primary btn-sm" href="/country/{{this.country_id}}/update">
+                Edit
+            </a>
+        </td>
+    </tr>
+    {{/each}}
+</table>
+
+{{/block}}
+
+{{/extends}}

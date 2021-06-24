@@ -3,3 +3,5 @@ insert into country (country) values ('Timbuktu');
 
 update actor set first_name = 'Zoen', last_name = "Tay2" where
  actor_id = 200;
+
+ delete from actor where actor_id = 201;

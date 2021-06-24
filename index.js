@@ -144,6 +144,50 @@ async function main() {
 
     })
 
+    app.get('/actor/:actor_id/delete', async(req,res)=>{
+        let [actor] = await connection.execute(
+            "select * from actor where actor_id = ?",
+            [ req.params.actor_id]
+        )
+        let targetActor = actor[0];
+        res.render('delete_actor',{
+            'actor': targetActor
+        })
+    })
+
+    app.post('/actor/:actor_id/delete', async(req,res)=>{
+        let query = " delete from actor where actor_id = ?"
+        await connection.execute(query, [ req.params.actor_id]);
+        res.redirect('/')
+    })
+
+    app.get('/countries', async(req,res)=>{
+        let query = "select * from country";
+        let [countries] = await connection.execute(query);
+        res.render('countries', {
+            'countries': countries
+        })
+    })
+
+    app.get('/country/:country_id/update', async(req,res)=>{
+        let [country] = await connection.execute(
+            "select * from country where country_id = ?", 
+            [req.params.country_id]
+        );
+        let targetCountry = country[0];
+        res.render('update_country',{
+            'country': targetCountry
+        })
+    })
+
+
+    app.post('/country/:country_id/update', async(req,res)=>{
+        let query = "update country set country = ? where country_id = ?"
+        let bindings = [ req.body.country, req.params.country_id];
+        await connection.execute(query, bindings);
+        res.redirect('/countries');
+    })
+
     app.get('/country/create', async(req,res)=>{
         res.render('create_country');
     })
